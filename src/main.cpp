@@ -75,7 +75,7 @@ int main() {
             }
             break;
         case pwd:
-            std::cout<<std::filesystem::current_path();
+            std::cout<<std::filesystem::current_path()<<std::endl;
             break;
         default:
             std::istringstream iss(input);
