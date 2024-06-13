@@ -74,7 +74,7 @@ std::string builtin_type(std::string str)
         std::string fullPath = dir + "/" + str;
 
         if (isExecutable(fullPath)) {
-            ans = "is ";
+            ans = " is ";
             ans = ans.append(fullPath);
             found=true;
         }
