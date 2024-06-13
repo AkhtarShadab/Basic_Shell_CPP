@@ -62,7 +62,7 @@ std::string builtin_type(std::string str)
 {
   std::string ans;
   std::vector<std::string> paths=getPaths();
-  if(str=="echo"||str=="exit"||str=="type"||str=="cat"||str=="cd")
+  if(str=="echo"||str=="exit"||str=="type"||str=="cd")
   {
     ans=" is a shell builtin";
     ans=str.append(ans);
