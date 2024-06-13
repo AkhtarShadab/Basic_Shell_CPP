@@ -20,16 +20,23 @@ enum commands
 
 std::vector<std::string> getPaths() {
     std::vector<std::string> paths;
-    char *pathEnv = getenv("PATH");
+    char* pathEnv = getenv("PATH");
+
     if (pathEnv) {
-        char *token = strtok(pathEnv, ":");
+        char* pathCopy = strdup(pathEnv);
+        char* token = strtok(pathCopy, ":"); // Use ":" for Unix-like systems. Use ";" for Windows.
+
         while (token != nullptr) {
-            paths.emplace_back(token);
+            paths.push_back(token);
             token = strtok(nullptr, ":");
         }
+
+        free(pathCopy);
     }
+
     return paths;
 }
+
 bool isExecutable(const std::string& filePath) {
     struct stat sb;
     if (stat(filePath.c_str(), &sb) == 0) {
