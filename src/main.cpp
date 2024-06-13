@@ -33,9 +33,9 @@ std::string builtin_check(std::string str)
   if(str=="echo"||str=="exit"||str=="type"||str=="cat"||str=="cd")
   {
     ans=" is a shell builtin";
-    ans=str.append(ans);
   }
-  else ans="nonexistent: not found";
+  else ans=": not found";
+  ans=str.append(ans);
   return ans;
 } 
 int main()
