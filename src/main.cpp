@@ -10,6 +10,7 @@ enum validCommands
     cd,
     exit0,
     type,
+    pwd,
     invalid,
 };
 validCommands isValid(std::string command) {
@@ -18,6 +19,7 @@ validCommands isValid(std::string command) {
     if (command == "cd") return validCommands::cd;
     if (command == "exit") return validCommands::exit0;
     if (command == "type") return validCommands::type;
+    if (command == "pwd") return validCommands::pwd;
     return invalid;
 }
 std::string valid[4] = {"echo", "cd", "exit0"};
@@ -71,6 +73,9 @@ int main() {
                     std::cout << input << " is " << path << std::endl;
                 }
             }
+            break;
+        case pwd:
+            std::cout<<std::filesystem::current_path()<<std::endl;
             break;
         default:
             std::istringstream iss(input);
