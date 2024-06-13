@@ -15,7 +15,7 @@ int main() {
   
     std::string input;
     std::getline(std::cin, input);
-    if(input=="exit")
+    if(input=="exit 0")
     {
       break;
     }
