@@ -36,33 +36,48 @@ std::string get_path(std::string command) {
     }
     return "";
 }
-void get_info(std::string arg)
+void get_info(std::string path)
 {
-    std::filesystem::path path = arg;
-    try {
-        // Handle an empty path
-        if (path.empty()) {
-            std::cerr << "cd: No path provided." << std::endl;
+    try{
+    std::string targetPath;
+
+        if (path.empty() || path == "~") {
+            // Get the home directory from the HOME environment variable
+            const char* homeDir = getenv("HOME");
+            if (homeDir == nullptr) {
+                std::cerr << "cd: Could not determine home directory. HOME environment variable not set." << std::endl;
+                return;
+            }
+            targetPath = homeDir;
+        } else if (path[0] == '~') {
+            // Replace ~ with the home directory path
+            const char* homeDir = getenv("HOME");
+            if (homeDir == nullptr) {
+                std::cerr << "cd: Could not determine home directory. HOME environment variable not set." << std::endl;
+                return;
+            }
+            targetPath = std::string(homeDir) + path.substr(1); // Append the rest of the path
+        } else {
+            // Use the provided path as-is for relative and absolute paths
+            targetPath = path;
+        }
+
+        // Resolve to an absolute path
+        std::filesystem::path resolvedPath = std::filesystem::absolute(targetPath);
+
+        // Check if the target path exists and is a directory
+        if (!std::filesystem::exists(resolvedPath)) {
+            std::cerr << "cd: " << path << ": No such file or directory" << std::endl;
             return;
         }
 
-        std::filesystem::path targetPath = std::filesystem::absolute(path); // Resolve absolute path
-        
-        // Check if the target path exists and is a directory
-        if (!std::filesystem::exists(targetPath)) {
-            std::cerr <<path.string() << ": No such file or directory" << std::endl;
-            return;
-        }
-        
-        if (!std::filesystem::is_directory(targetPath)) {
-            std::cerr << path.string() << ": Not a directory" << std::endl;
+        if (!std::filesystem::is_directory(resolvedPath)) {
+            std::cerr << "cd: " << path << ": Not a directory" << std::endl;
             return;
         }
 
         // Set the current path
-        std::filesystem::current_path(targetPath);
-
-        // No output on successful directory change
+        std::filesystem::current_path(resolvedPath);
     } catch (const std::filesystem::filesystem_error& e) {
         std::cerr << "cd: " << path << ": " << e.what() << std::endl;
     }
