@@ -8,17 +8,18 @@ int main() {
 
 
   // Uncomment this block to pass the first stage
-  bool check = true;
-  while(check)
+  
+  while(1)
   {
     std::cout << "$ ";
   
     std::string input;
     std::getline(std::cin, input);
-    std::cout<<input<<": command not found\n";
     if(input=="exit")
     {
-      check=false;
+      break;
     }
+    std::cout<<input<<": command not found\n";
+    
   }
 }
