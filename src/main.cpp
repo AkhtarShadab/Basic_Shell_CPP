@@ -50,12 +50,12 @@ void get_info(std::string arg)
         
         // Check if the target path exists and is a directory
         if (!std::filesystem::exists(targetPath)) {
-            std::cerr << "cd: " << path << ": No such file or directory" << std::endl;
+            std::cerr <<path.string() << ": No such file or directory" << std::endl;
             return;
         }
         
         if (!std::filesystem::is_directory(targetPath)) {
-            std::cerr << "cd: " << path << ": Not a directory" << std::endl;
+            std::cerr << path.string() << ": Not a directory" << std::endl;
             return;
         }
 
