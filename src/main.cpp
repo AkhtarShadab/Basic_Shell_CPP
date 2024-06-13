@@ -1,5 +1,12 @@
 #include <iostream>
+#include <vector>
 #include <string>
+#include <cstring>  // For strtok
+#include <cstdlib>  // For getenv
+#include <dirent.h> // For opendir, readdir, closedir
+#include <sys/stat.h> // For stat
+
+
 enum commands
 {
   echo,
@@ -8,6 +15,30 @@ enum commands
   type,
   invalid
 };
+
+
+
+std::vector<std::string> getPaths() {
+    std::vector<std::string> paths;
+    char *pathEnv = getenv("PATH");
+    if (pathEnv) {
+        char *token = strtok(pathEnv, ":");
+        while (token != nullptr) {
+            paths.emplace_back(token);
+            token = strtok(nullptr, ":");
+        }
+    }
+    return paths;
+}
+bool isExecutable(const std::string& filePath) {
+    struct stat sb;
+    if (stat(filePath.c_str(), &sb) == 0) {
+        return sb.st_mode & S_IXUSR;
+    }
+    return false;
+}
+
+
 commands string_to_command(std::string str)
 {
   
@@ -27,16 +58,33 @@ commands string_to_command(std::string str)
   
   return invalid;
 }
-std::string builtin_check(std::string str)
+std::string builtin_type(std::string str)
 {
   std::string ans;
+  std::vector<std::string> paths=getPaths();
   if(str=="echo"||str=="exit"||str=="type"||str=="cat"||str=="cd")
   {
     ans=" is a shell builtin";
+    ans=str.append(ans);
+    return ans;
   }
-  else ans=": not found";
-  ans=str.append(ans);
-  return ans;
+  bool found = false;
+
+    for (const std::string& dir : paths) {
+        std::string fullPath = dir + "/" + str;
+
+        if (isExecutable(fullPath)) {
+            ans = "is ";
+            ans = ans.append(fullPath);
+            found=true;
+        }
+    }
+
+    if (!found) {
+        ans=": not found";
+    }
+    ans=str.append(ans);
+    return ans;
 } 
 int main()
 {
@@ -60,7 +108,7 @@ int main()
       return 0;
     case type:
       temp=input.substr(5);
-      temp = builtin_check(temp);
+      temp = builtin_type(temp);
       std::cout<<temp<<"\n";
       break;
     default:
