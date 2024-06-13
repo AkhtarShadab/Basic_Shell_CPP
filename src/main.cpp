@@ -36,10 +36,36 @@ std::string get_path(std::string command) {
     }
     return "";
 }
-std::filesystem::path get_info(std::string arg)
+void get_info(std::string arg)
 {
     std::filesystem::path path = arg;
-    return path;
+    try {
+        // Handle an empty path
+        if (path.empty()) {
+            std::cerr << "cd: No path provided." << std::endl;
+            return;
+        }
+
+        std::filesystem::path targetPath = std::filesystem::absolute(path); // Resolve absolute path
+        
+        // Check if the target path exists and is a directory
+        if (!std::filesystem::exists(targetPath)) {
+            std::cerr << "cd: " << path << ": No such file or directory" << std::endl;
+            return;
+        }
+        
+        if (!std::filesystem::is_directory(targetPath)) {
+            std::cerr << "cd: " << path << ": Not a directory" << std::endl;
+            return;
+        }
+
+        // Set the current path
+        std::filesystem::current_path(targetPath);
+
+        // No output on successful directory change
+    } catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "cd: " << path << ": " << e.what() << std::endl;
+    }
 }
 int main() {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -60,13 +86,7 @@ int main() {
         case cd:
             iss>>arg;
             iss>>arg;
-            path = get_info(arg);
-            try{
-                std::filesystem::current_path(path);
-            }
-            catch(const std::filesystem::filesystem_error& e){
-                std::cout<<"cd: "<<arg<<": No such file or directory\n";
-            }
+            get_info(arg);
             break;
         case echo:
             input.erase(0, input.find(" ") + 1);
