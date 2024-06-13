@@ -92,8 +92,8 @@ int main() {
                 for (const auto& arg : arguments) {
                     path += " " + arg;  // Append arguments to the command string
                 }
-                std::cout<<path;
-                int exitCode = std::system(command.c_str());
+                // std::cout<<p/ath;
+                int exitCode = std::system(path.c_str());
             }
 
             break;
