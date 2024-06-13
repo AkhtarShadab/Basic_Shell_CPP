@@ -63,7 +63,7 @@ int main() {
                     
                     std::string path = get_path(input);
                     if(path.empty()){
-                        std::cout<<input<<" not found\n";
+                        std::cout<<input<<": not found\n";
                     }
                     else{
                         std::cout<<input<<" is "<<path<<std::endl;
