@@ -36,6 +36,11 @@ std::string get_path(std::string command) {
     }
     return "";
 }
+std::filesystem::path get_info(std::string arg)
+{
+    std::filesystem::path path = arg;
+    return path;
+}
 int main() {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     // std::cout << "Logs from your program will appear here!\n";
@@ -48,8 +53,20 @@ int main() {
         std::cout << "$ ";
         std::string input;
         std::getline(std::cin, input);
+        std::istringstream iss(input);
+        std::string command, arg;
+        std::filesystem::path path;
         switch (isValid(input)) {
         case cd:
+            iss>>arg;
+            iss>>arg;
+            path = get_info(arg);
+            try{
+                std::filesystem::current_path(path);
+            }
+            catch(const std::filesystem::filesystem_error& e){
+                std::cout<<"cd: "<<arg<<": No such file or directory\n";
+            }
             break;
         case echo:
             input.erase(0, input.find(" ") + 1);
@@ -78,8 +95,8 @@ int main() {
             std::cout<<std::filesystem::current_path().string()<<"\n";
             break;
         default:
-            std::istringstream iss(input);
-            std::string command, arg;
+            
+            
             iss >> command;
             std::vector<std::string> arguments;
             while (iss >> arg)
